@@ -22,7 +22,7 @@ class main:
         self.musics1 = []
         self.root.config(background="#ffffff")
         self.music_filename = ""
-        self.lists = Listbox(self.root)
+        self.lists = Listbox(self.root , width=50)
         panel1 = PanedWindow(background="#8d96f0" , height=90 , width=100, relief='ridge' , borderwidth=2)
         self.labeltitle = tkinter.Label(self.root , text="No music" , font=('calibri' , 15) , background="#ffffff")
         panel1.add(self.labeltitle , stretch="always")
@@ -110,6 +110,7 @@ class main:
 
     def play_all(self):
         self.labelstatus.config(text="Playing")
+        self.root.title(os.path.basename(self.musics1[self.y]))
         self.labeltitle.config(text=os.path.basename(self.musics1[self.y]))
         pygame.mixer.music.load(self.musics1[self.y])
         pygame.mixer.music.play(0)
@@ -120,6 +121,7 @@ class main:
         pos = pygame.mixer.music.get_pos()
         if int(pos) == -1:
             self.y += 1
+            self.root.title(os.path.basename(self.musics1[self.y]))
             self.labeltitle.config(text=os.path.basename(self.musics1[self.y]))
             pygame.mixer.music.load(self.musics1[self.y])
             pygame.mixer.music.play(0)
