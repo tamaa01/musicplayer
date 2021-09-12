@@ -16,8 +16,9 @@ class main:
         pygame.mixer.init()
         self.volume_ = 10
         self.playing_now = ""
-
-       
+        self.RPC = Presence(882453198672134204)
+        self.RPC.connect()
+        self.RPC.update(state="Idle")
         self.x = 0
         self.y = 0
         self.paused = False
@@ -30,7 +31,6 @@ class main:
         
         self.root.config(background="#ffffff")
         self.music_filename = ""
-        icon1 = PhotoImage(file="Icons/play.png")
         self.lists = Listbox(self.root , width=50)
         panel1 = PanedWindow(background="#8d96f0" , height=90 , width=100, relief='ridge' , borderwidth=2)
         self.labeltitle = tkinter.Label(self.root , text="No music" , font=('calibri' , 15) , background="#ffffff")
@@ -40,7 +40,7 @@ class main:
         self.scale = Scale(self.root , variable=self.var , orient=HORIZONTAL, from_=0 , to=1 , resolution=0.01 , background="#d4f6fc")
         self.change_volume = Button(self.root , text="Change volume",command=self.ch_volume , background="#ffffff")
         self.button1 = tkinter.Button(self.root , text="Open file" , height=2 , width=8 , command=self.add_music)
-        self.button2 = tkinter.Button(self.root , height=2 , width=8 , command=self.play_music , text="Play")
+        self.button2 = tkinter.Button(self.root , text="Play" , height=2 , width=8 , command=self.play_music)
         self.button3 = tkinter.Button(self.root , text="Pause" , height=2 , width=8 , command=self.pause_music)
         self.button4 = tkinter.Button(self.root , text="Stop" , height=2 , width=8 , command=self.stop_music)
         self.button5 = tkinter.Button(self.root , text="Delete music" , height=2 , width=8 , command=self.delete_music)
@@ -86,11 +86,11 @@ class main:
             self.skip = True
         
     def add_music(self):
-        
+        self.RPC.update(state="Browsing file")
         filename = filedialog.askopenfilename()
         print(filename)
         if len(filename) == 0:
-            
+            self.RPC.update(state="Idle")
             return
 
         self.x = self.x + 1
@@ -100,7 +100,7 @@ class main:
         #self.labeltitle.config(text=os.path.basename(str(self.music_filename)))
         self.lists.insert(self.x , os.path.basename(str(self.music_filename)))
         self.root.title(os.path.basename(str(self.music_filename)))
-       
+        self.RPC.update(state="Idle")
         
         
     def play_music(self):
@@ -119,14 +119,13 @@ class main:
             self.labelstatus.config(text="Playing")
             pygame.mixer.music.set_volume(self.scale.get())
             pygame.mixer.music.play(-1)
-           
+            self.RPC.update(state="Playing {}".format(song))
 
         else:
             self.labelstatus.config(text="Playing")
             pygame.mixer.music.unpause()
             self.paused = False
-         
-
+            self.RPC.update(state="Playing {}".format(song))
         
         
     def pause_music(self):
@@ -134,8 +133,7 @@ class main:
         self.labelstatus.config(text="Paused")
         pygame.mixer.music.pause()
         self.paused = True
-
-
+        self.RPC.update(state="[Paused] {}".format(self.playing_now))
 
 
         
@@ -145,7 +143,7 @@ class main:
         self.paused=False
         self.skip = False
         self.previous = False
-       
+        self.RPC.update(state="Idle")
        
     def ch_volume(self):
         pygame.mixer.music.set_volume(self.scale.get())
@@ -170,7 +168,7 @@ class main:
         pygame.mixer.music.set_volume(self.volume_)
         pygame.mixer.music.load(self.musics1[self.y])
         pygame.mixer.music.play(0)
-       
+        self.RPC.update(state="Playing {}".format(os.path.basename(self.musics1[self.y])))
         self.que()
 
     def que(self):
@@ -193,7 +191,7 @@ class main:
             pygame.mixer.music.set_volume(self.volume_)
             pygame.mixer.music.load(self.musics1[self.y])
             pygame.mixer.music.play(0)
-           
+            self.RPC.update(state="Playing {}".format(os.path.basename(self.musics1[self.y])))
             
                 
         
@@ -212,7 +210,7 @@ class main:
             pygame.mixer.music.set_volume(self.volume_)
             pygame.mixer.music.load(self.musics1[self.y])
             pygame.mixer.music.play(0)
-
+            self.RPC.update(state="Playing {}".format(os.path.basename(self.musics1[self.y])))
             self.skip = False
             
                 
@@ -233,6 +231,7 @@ class main:
             pygame.mixer.music.set_volume(self.volume_)
             pygame.mixer.music.load(self.musics1[self.y])
             pygame.mixer.music.play(0)
+            self.RPC.update(state="Playing {}".format(os.path.basename(self.musics1[self.y])))
             self.previous = False
             
                 
